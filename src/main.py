@@ -7,12 +7,20 @@ import data
 import plot
 import numpy as np
 
+'''
+ Models to test (ordered by Size ascending):
+ MobileNetV2(224x224)  -
+ Xception (299x299)
+ InceptionV3(299x299)
+ ResNet50 (224x224)
+ NASNetLarge(331x331)
+'''
+
 if __name__ == '__main__':
     train_generator, valid_generator, test_generator = data.get_image_generators()
 
     num_classes = train_generator.num_classes  # Counting BACKGROUND Class
     input_shape = (300, 200, 3)
-    print("HOLAAAAA " + sys.argv[1])
     epochs = 100
     values, counts = np.unique(train_generator.labels, return_counts=True)
 
