@@ -1,26 +1,19 @@
 import sys
 
+import numpy as np
+from keras.applications.resnet50 import preprocess_input
 from sklearn.utils import class_weight
 
 import cnn
 import data
 import plot
-import numpy as np
-
-'''
- Models to test (ordered by Size ascending):
- MobileNetV2(224x224)  -
- Xception (299x299)
- InceptionV3(299x299)
- ResNet50 (224x224)
- NASNetLarge(331x331)
-'''
 
 if __name__ == '__main__':
-    train_generator, valid_generator, test_generator = data.get_image_generators()
+    train_generator, valid_generator, test_generator = data.get_image_generators(preprocess_input)
 
     num_classes = train_generator.num_classes  # Counting BACKGROUND Class
     input_shape = (300, 200, 3)
+    print("Test: " + sys.argv[1])
     epochs = 100
     values, counts = np.unique(train_generator.labels, return_counts=True)
 
@@ -36,8 +29,9 @@ if __name__ == '__main__':
     for num in np.unique(train_generator.labels):
         class_weights_dict[num] = class_weights[num]
 
-    # model = cnn.ResNet50(classes=num_classes, input_shape=input_shape)
-    model = cnn.get_cnn_sequential_model(num_classes, input_shape)
+    model = cnn.get_resnet_model(num_classes, input_shape)
+    # model = cnn.get_xception_model(num_classes, input_shape)
+
     cnn.compile_cnn(model)
 
     history = cnn.fit_generator(model, train_generator, valid_generator, epochs, class_weights_dict)
